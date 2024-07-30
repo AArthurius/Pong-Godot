@@ -1,0 +1,105 @@
+[gd_scene load_steps=13 format=3 uid="uid://3ypn5oihlpy4"]
+
+[ext_resource type="PackedScene" uid="uid://e4oi3ic0g8tj" path="res://Scenes/retangulo.tscn" id="1_fo6bt"]
+[ext_resource type="Texture2D" uid="uid://blucmjpgme0xl" path="res://Sprite/Sem título.png" id="2_84xss"]
+[ext_resource type="Script" path="res://Scripts/retangulo.gd" id="2_m1kie"]
+[ext_resource type="Script" path="res://Scripts/Bola.gd" id="3_i457i"]
+[ext_resource type="Script" path="res://Scripts/retangulo2.gd" id="3_t273u"]
+[ext_resource type="AudioStream" uid="uid://cb2ji1d1sftja" path="res://SFX/18783.mp3" id="6_6pcn2"]
+[ext_resource type="Script" path="res://Scripts/Scores.gd" id="6_f21e3"]
+[ext_resource type="FontFile" uid="uid://0k0xx20h2als" path="res://fonts/PixelOperator8.ttf" id="6_jsj2e"]
+[ext_resource type="Script" path="res://Scripts/Audio.gd" id="7_jpc7x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c6pcl"]
+size = Vector2(19.018, 20.39)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nod3q"]
+size = Vector2(8.75, 656)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f8vgk"]
+size = Vector2(8.75, 1170.52)
+
+[node name="Node" type="Node"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Retangulos" type="Node2D" parent="."]
+
+[node name="Retangulo" parent="Retangulos" instance=ExtResource("1_fo6bt")]
+position = Vector2(-550, 0)
+script = ExtResource("2_m1kie")
+
+[node name="Retangulo2" parent="Retangulos" instance=ExtResource("1_fo6bt")]
+position = Vector2(550, 0)
+script = ExtResource("3_t273u")
+
+[node name="Bola" type="CharacterBody2D" parent="."]
+script = ExtResource("3_i457i")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bola"]
+scale = Vector2(19.055, 20.416)
+texture = ExtResource("2_84xss")
+
+[node name="Area2D" type="Area2D" parent="Bola"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bola/Area2D"]
+shape = SubResource("RectangleShape2D_c6pcl")
+
+[node name="Bounce" type="AudioStreamPlayer" parent="Bola"]
+stream = ExtResource("6_6pcn2")
+script = ExtResource("7_jpc7x")
+
+[node name="Scores" type="Node2D" parent="."]
+script = ExtResource("6_f21e3")
+
+[node name="Score1" type="Label" parent="Scores"]
+unique_name_in_owner = true
+offset_left = -102.0
+offset_top = -321.0
+offset_right = -53.0
+offset_bottom = -265.0
+theme_override_fonts/font = ExtResource("6_jsj2e")
+theme_override_font_sizes/font_size = 56
+
+[node name="Score2" type="Label" parent="Scores"]
+unique_name_in_owner = true
+offset_left = 102.0
+offset_top = -321.0
+offset_right = 151.0
+offset_bottom = -265.0
+theme_override_fonts/font = ExtResource("6_jsj2e")
+theme_override_font_sizes/font_size = 56
+
+[node name="Gols" type="Node2D" parent="."]
+
+[node name="Esquerda" type="Area2D" parent="Gols"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Gols/Esquerda"]
+position = Vector2(-580.37, 0)
+scale = Vector2(1.07166, 1)
+shape = SubResource("RectangleShape2D_nod3q")
+
+[node name="Direita" type="Area2D" parent="Gols"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Gols/Direita"]
+position = Vector2(580.37, 0)
+shape = SubResource("RectangleShape2D_nod3q")
+
+[node name="Bordas" type="StaticBody2D" parent="."]
+
+[node name="Cima" type="CollisionShape2D" parent="Bordas"]
+position = Vector2(0, 328.375)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_f8vgk")
+
+[node name="Baixo" type="CollisionShape2D" parent="Bordas"]
+position = Vector2(0.257507, -328.375)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_f8vgk")
+
+[connection signal="body_entered" from="Bola/Area2D" to="Bola" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Bola/Area2D" to="Bola/Bounce" method="_on_area_2d_body_entered"]
+[connection signal="area_entered" from="Gols/Esquerda" to="Bola" method="_on_esquerda_area_entered"]
+[connection signal="area_entered" from="Gols/Esquerda" to="Scores" method="_on_esquerda_area_entered"]
+[connection signal="area_entered" from="Gols/Direita" to="Bola" method="_on_direita_area_entered"]
+[connection signal="area_entered" from="Gols/Direita" to="Scores" method="_on_direita_area_entered"]
